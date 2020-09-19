@@ -26,14 +26,14 @@ module TeslaApi
 
       @api = Faraday.new(
         @base_uri + '/api/1',
-        headers: { 'User-Agent' => "github.com/timdorr/tesla-api v:#{VERSION}" }
+        headers: { 'User-Agent' => "github.com/timdorr/tesla-api v:#{VERSION}" },
+        proxy: ENV["TESLA_REQUEST_PROXY"] || nil
       ) do |conn|
         conn.request :json
         conn.response :json
         conn.response :raise_error
         conn.request :retry, retry_options if retry_options # Must be registered after :raise_error
         conn.adapter Faraday.default_adapter
-        conn.proxy ENV["TESLA_REQUEST_PROXY"] || nil
       end
     end
 
