@@ -33,6 +33,7 @@ module TeslaApi
         conn.response :raise_error
         conn.request :retry, retry_options if retry_options # Must be registered after :raise_error
         conn.adapter Faraday.default_adapter
+        conn.proxy ENV["TESLA_REQUEST_PROXY"] || nil
       end
     end
 
