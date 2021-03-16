@@ -153,8 +153,8 @@ module TeslaApi
       command("sun_roof_control", body: {state: "move", percent: percent})["response"]
     end
 
-    def window_control(command)
-      command("window_control", body: {command: command, lat: 0, lon: 0})["response"]
+    def window_control(command, lat = 0, lon = 0)
+      command("window_control", body: {command: command, lat: lat, lon: lon})["response"]
     end
 
     def remote_start_drive(password)
