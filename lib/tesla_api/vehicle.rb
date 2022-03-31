@@ -105,6 +105,26 @@ module TeslaApi
       command("set_charge_limit", body: {percent: percent.to_i})["response"]
     end
 
+    def set_charging_amps(charging_amps)
+      command("set_charging_amps", body: {charging_amps: charging_amps})["response"]
+    end
+
+    def set_scheduled_charging(enable, time)
+      command("set_scheduled_charging", body: {enable: enable, time: time})["response"]
+    end
+
+    def set_scheduled_departure(enable, departure_time, preconditioning_enabled, preconditioning_weekdays_only, off_peak_charging_enabled, off_peak_charging_weekdays_only, end_off_peak_time)
+      command("set_scheduled_departure", body: {
+        enable: enable,
+        departure_time: departure_time,
+        preconditioning_enabled: preconditioning_enabled,
+        preconditioning_weekdays_only: preconditioning_weekdays_only,
+        off_peak_charging_enabled: off_peak_charging_enabled,
+        off_peak_charging_weekdays_only: off_peak_charging_weekdays_only,
+        end_off_peak_time: end_off_peak_time
+      })["response"]
+    end
+
     def charge_start
       command("charge_start")["response"]
     end
@@ -153,12 +173,12 @@ module TeslaApi
       command("sun_roof_control", body: {state: "move", percent: percent})["response"]
     end
 
-    def window_control(command, lat = 0, lon = 0)
-      command("window_control", body: {command: command, lat: lat, lon: lon})["response"]
+    def window_control(command)
+      command("window_control", body: {command: command, lat: 0, lon: 0})["response"]
     end
 
-    def remote_start_drive(password)
-      command("remote_start_drive", body: {password: password})["response"]
+    def remote_start_drive
+      command("remote_start_drive")["response"]
     end
 
     def open_trunk

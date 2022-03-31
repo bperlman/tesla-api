@@ -1,8 +1,16 @@
 module TeslaApi
   module Stream
-    def stream(&receiver)
+    def self.streaming_endpoint_url
+      "wss://streaming.vn.teslamotors.com/streaming/"
+    end
+
+    def self.streaming_endpoint
+      Async::HTTP::Endpoint.parse(streaming_endpoint_url, alpn_protocols: Async::HTTP::Protocol::HTTP11.names)
+    end
+
+    def stream(endpoint: Stream.streaming_endpoint, &receiver)
       Async do |task|
-        Async::WebSocket::Client.connect(streaming_endpoint) do |connection|
+        Async::WebSocket::Client.connect(endpoint) do |connection|
           on_timeout = ->(subtask) do
             subtask.sleep TIMEOUT
             task.stop
@@ -11,16 +19,16 @@ module TeslaApi
           connection.write(streaming_connect_message)
           timeout = task.async(&on_timeout)
 
-          while message = connection.read
+          while (message = connection.read)
             timeout.stop
             timeout = task.async(&on_timeout)
 
             case message[:msg_type]
-            when 'data:update'
-              attributes = message[:value].split(',')
+            when "data:update"
+              attributes = message[:value].split(",")
 
               receiver.call({
-                time: DateTime.strptime((attributes[0].to_i/1000).to_s, '%s'),
+                time: DateTime.strptime((attributes[0].to_i / 1000).to_s, "%s"),
                 speed: attributes[1].to_f,
                 odometer: attributes[2].to_f,
                 soc: attributes[3].to_f,
@@ -34,7 +42,7 @@ module TeslaApi
                 est_range: attributes[11].to_f,
                 heading: attributes[12].to_f
               })
-            when 'data:error'
+            when "data:error"
               task.stop
             end
           end
@@ -46,20 +54,12 @@ module TeslaApi
 
     TIMEOUT = 30
 
-    def streaming_endpoint
-      Async::HTTP::Endpoint.parse(streaming_endpoint_url)
-    end
-
-    def streaming_endpoint_url
-      'wss://streaming.vn.teslamotors.com/streaming/'
-    end
-
     def streaming_connect_message
       {
-        msg_type: 'data:subscribe',
-        token: Base64.strict_encode64("#{email}:#{self['tokens'].first}"),
-        value: 'speed,odometer,soc,elevation,est_heading,est_lat,est_lng,power,shift_state,range,est_range,heading',
-        tag: self['vehicle_id'].to_s,
+        msg_type: "data:subscribe_oauth",
+        token: client.access_token,
+        value: "speed,odometer,soc,elevation,est_heading,est_lat,est_lng,power,shift_state,range,est_range,heading",
+        tag: self["vehicle_id"].to_s
       }
     end
   end

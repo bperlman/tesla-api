@@ -1,6 +1,8 @@
 # Introduction
 
-This is unofficial documentation of the Tesla JSON API used by their iOS and Android apps. It features functionality to monitor and control their vehicle (Model S, Model X, and Model 3) and power (Powerwall) products. We currently have documentation for their vehicles, but always accept [pull requests](https://github.com/timdorr/tesla-api/pulls) for improvements and additions.
+This is unofficial documentation of the Tesla JSON API used by their iOS and Android apps. It features functionality to monitor and control their vehicle (Models S, 3, X, Y) and power (Powerwall) products. We currently have documentation for their vehicles, but always accept [pull requests](https://github.com/timdorr/tesla-api/pulls) for improvements and additions.
+
+If you want to use Tesla's Bluetooth Low Energy (BLE) protocol to communicate with the car instead, [there is a separate documentation project for it](https://teslabtapi.lexnastin.com).
 
 ## Before You Begin
 
@@ -23,4 +25,3 @@ Streams in data about the car's telemetry at up to half second increments. The u
 ### Autopark ("Summon")
 
 A streaming command mode to control the automatic parking of HW1 (Autopilot v1) and HW2/HW2.5 (Autopilot v2) cars. This API uses a standard WebSocket that exchanges JSON objects to convey state information and issue commands during the Autopark session.
-
