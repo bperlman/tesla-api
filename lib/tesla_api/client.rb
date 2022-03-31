@@ -28,10 +28,11 @@ module TeslaApi
       @access_token_expires_at = access_token_expires_at
       @refresh_token = refresh_token
 
+      client_options[:proxy] = ENV["TESLA_REQUEST_PROXY"] || nil
+
       @api = Faraday.new(
         @base_uri + "/api/1",
-        client_options,
-        proxy: ENV["TESLA_REQUEST_PROXY"] || nil
+        client_options
       ) { |conn|
         # conn.response :logger, nil, {headers: true, bodies: true}
         conn.request :json
