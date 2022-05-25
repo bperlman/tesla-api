@@ -29,6 +29,7 @@ module TeslaApi
       @refresh_token = refresh_token
 
       client_options[:proxy] = ENV["TESLA_REQUEST_PROXY"] || nil
+      client_options[:headers] ={'Accept' => 'application/json'}
 
       @api = Faraday.new(
         @base_uri + "/api/1",
